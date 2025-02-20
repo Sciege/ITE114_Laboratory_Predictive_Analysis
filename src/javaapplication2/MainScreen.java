@@ -17,9 +17,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -35,6 +38,14 @@ public class MainScreen extends javax.swing.JFrame {
     /**
      * Creates new form MainScreen
      */
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+
+    private int _study_hours;
+    private int _sleep_hours;
+    private int _class_attendance;
+    private int _assignments_completed;
+    private int _extracurricular_hours;        
+    
     private String userFile;
     private String finalFile; 
             
@@ -43,6 +54,7 @@ public class MainScreen extends javax.swing.JFrame {
     private Font laila_regular_20;
     private Font laila_medium;
     private Font laila_bold;
+    private Font laila_bold_1;
     private Font laila_light;
     
     private final Color LIGHT_BG = new Color(255, 255, 255);
@@ -86,6 +98,7 @@ public class MainScreen extends javax.swing.JFrame {
             laila_regular_40 = Font.createFont(Font.TRUETYPE_FONT, fontFileRegular).deriveFont(40f);
             laila_regular_20 = Font.createFont(Font.TRUETYPE_FONT, fontFileRegular).deriveFont(20f);
             laila_bold = Font.createFont(Font.TRUETYPE_FONT, fontFileBold).deriveFont(35f);
+            laila_bold_1 = Font.createFont(Font.TRUETYPE_FONT, fontFileBold).deriveFont(45f);
             laila_medium = Font.createFont(Font.TRUETYPE_FONT, fontFileMedium).deriveFont(40f);
             laila_light = Font.createFont(Font.TRUETYPE_FONT, fontFileLight).deriveFont(10f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -94,6 +107,7 @@ public class MainScreen extends javax.swing.JFrame {
             ge.registerFont(laila_regular_40);
             ge.registerFont(laila_regular_45);
             ge.registerFont(laila_bold);
+            ge.registerFont(laila_bold_1);
             ge.registerFont(laila_light);
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
@@ -249,7 +263,6 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(900, 500));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -275,7 +288,7 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
         jLabel3.setFont(laila_regular_20);
         jLabel3.setText("Note: The more data sets there are, the more accurate the prediction results.");
 
-        exam_score.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        exam_score.setFont(laila_bold_1);
         exam_score.setText("....");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -367,11 +380,11 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(text1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(text1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -409,11 +422,8 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel11))
-                    .addComponent(jLabel8))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(text5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(text5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -487,15 +497,10 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(text6, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel10)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(text6, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
@@ -540,6 +545,11 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
         );
 
         mode.setText("On");
+        mode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modeActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(laila_light);
         jLabel13.setText("Have own data?");
@@ -624,14 +634,23 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
         //check if value if user has own set of data
         
         //getter 
-        int _study_hours = Integer.parseInt(text3.getText());
-        int _sleep_hours = Integer.parseInt(text1.getText());
-        int _class_attendance = Integer.parseInt(text4.getText());
-        int _assignments_completed = Integer.parseInt(text5.getText());
-        int _extracurricular_hours = Integer.parseInt(text6.getText());
+        try {
+     _study_hours = Integer.parseInt(text3.getText());
+     _sleep_hours = Integer.parseInt(text1.getText());
+     _class_attendance = Integer.parseInt(text4.getText());
+     _assignments_completed = Integer.parseInt(text5.getText());
+     _extracurricular_hours = Integer.parseInt(text6.getText());
+    
+    // If any parsing fails, it will throw NumberFormatException
+    // Continue with your existing code...
+    
+    } catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(null, "Please enter valid integers only", "Input Error", JOptionPane.ERROR_MESSAGE);
+    return;
+    }
         
         String fileName = "C:\\Users\\Chesler John  Hamili\\OneDrive\\Documents\\NetBeansProjects\\HAMILI_LAB_2\\src\\main\\java\\doc\\data.csv";
-        if(userFile.isEmpty()){
+        if(userFile == null || userFile.isEmpty()){
             finalFile = fileName;
         }else{
             finalFile = userFile;
@@ -723,14 +742,17 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
         double predictedFinalExam = row.dotProduct(betaVector);
         
         //answer should be 0-100
+        df.setRoundingMode(RoundingMode.DOWN);
         if(predictedFinalExam>100){
             predictedFinalExam = 100;
+        }else if(predictedFinalExam <100 || predictedFinalExam>0){ 
+            predictedFinalExam = predictedFinalExam;
         }else{
             predictedFinalExam = 0;
         }
         // Output the predicted FinalExam
         System.out.println("\nPredicted Final Exam Score: " + predictedFinalExam);
-        exam_score.setText(String.valueOf(predictedFinalExam));
+        exam_score.setText(String.valueOf(df.format(predictedFinalExam)));
         }catch (FileNotFoundException e){
            e.printStackTrace();
         }   
@@ -742,22 +764,32 @@ private void updateRoundedPanelColors(JPanel panel, boolean isDarkMode) {
 
     private void fileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileButtonActionPerformed
         // TODO add your handling code here:
-        
         int returnVal = fileChooser.showOpenDialog(this);
+
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
-        // What to do with the file, e.g. display it in a TextArea
-        //textarea.read( new FileReader( file.getAbsolutePath() ), null );
-        userFile = file.toString();
-    } else {
-        //System.out.println("File access cancelled by user.");
-        javax.swing.JOptionPane.showMessageDialog(this, "Invalid file", "ERROR", javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
+            File file = fileChooser.getSelectedFile();
+            userFile = file.toString();
+
+        // Get last 3 characters safely            
+            if(!userFile.toLowerCase().endsWith(".csv")){
+                 javax.swing.JOptionPane.showMessageDialog(this, "Document should be in csv form", "ERROR", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }      
+        } 
+        else if (returnVal == JFileChooser.CANCEL_OPTION) {
+            System.out.println("File selection cancelled.");
+        } 
+        else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid file", "ERROR", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_fileButtonActionPerformed
 
     private void text3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_text3ActionPerformed
+
+    private void modeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_modeActionPerformed
 
     /**
      * @param args the command line arguments
